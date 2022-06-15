@@ -32,8 +32,6 @@ COPY sample_files/wordcount.txt /tmp/wordcount.txt
 RUN airflow db init && \
     airflow users create --role Admin --username admin --firstname Admin --lastname . --email admin@abc.com --password admin
 
-#RUN apt-get install -y --no-install-recommends supervisor && \
-#    mkdir /var/log/supervisor
 RUN pip3 install supervisor
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
