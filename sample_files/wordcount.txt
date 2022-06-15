@@ -1,0 +1,632 @@
+
+Stack Overflow
+
+    About
+    Products
+    For Teams
+
+Join Stack Overflow to find the best answer to your technical question, help others answer theirs.
+
+    Home
+        Public
+
+Questions
+Tags
+Users
+Companies
+Collectives
+
+    Explore Collectives
+
+    Teams
+    Stack Overflow for Teams – Start collaborating and sharing organizational knowledge. 
+
+How to Install pip for python 3.7 on Ubuntu 18?
+Asked 3 years, 4 months ago
+Modified 4 months ago
+Viewed 211k times
+Report this ad
+122
+34
+
+I've installed Python 3.7 on my Ubuntu 18.04 machine. Following this instructions in case it's relevant:
+
+    Download : Python 3.7 from Python Website [1] ,on Desktop and manually unzip it, on Desktop Installation : Open Terminal (ctrl +shift+T)
+
+    Go to the Extracted folder
+    $ cd ~/Desktop/Python-3.7.0
+    $ ./configure
+    $ make
+    $ sudo make install
+
+    Making Python 3.7 default Python :
+
+    $ sudo vim ~/.bashrc
+    press i
+    on the last and new line - Type
+    alias python= python3.7
+    press Esc
+    type - to save and exit vim
+    :wq
+    now type
+    $ source ~/.bashrc
+
+From here: https://www.quora.com/How-can-I-upgrade-Python-3-6-to-3-7-in-Ubuntu-18-04
+
+I've downloaded several modules through pip install module but when I try to import them, I get a ModuleNotFoundError: No module names 'xx'
+
+So I did some research and apparently when used pip to install, it installed in the modules in previous version of Python. Somewhere (probably a question in SO) I found a suggestion to install the module using python3.7 -m pip install module but then I get /usr/local/bin/python3.7: no module named pip.
+
+Now I'm stuck, pip is installed, but apparently not for Python 3.7. I'm assuming that if I can install pip for Python 3.7, I can run the pip install command and get the modules I need. If that is the case, how can I install pip for python 3.7, since it's already installed?
+
+This is the best I have come up with:
+
+I have installed python 3.7 successfully and I can install modules using pip (or pip3) but those modules are installed in Python 3.6 (Comes with ubuntu). Therefore I can't import those modules in python 3.7 (get a module not found)
+
+Python 3.7 doesn't recognize pip/pip3, so I can't install through pip/pip3 I need python 3.7
+python
+ubuntu
+pip
+Share
+Follow
+edited Feb 11 at 11:47
+user avatar
+Neuron
+4,38244 gold badges2929 silver badges5252 bronze badges
+asked Feb 11, 2019 at 15:17
+user avatar
+Justcurious
+1,82233 gold badges99 silver badges1515 bronze badges
+Add a comment
+14 Answers
+Sorted by:
+160
+
+In general, don't do this:
+
+pip install package
+
+because, as you have correctly noticed, it's not clear what Python version you're installing package for.
+
+Instead, if you want to install package for Python 3.7, do this:
+
+python3.7 -m pip install package
+
+Replace package with the name of whatever you're trying to install.
+
+Took me a surprisingly long time to figure it out, too. The docs about it are here.
+
+Your other option is to set up a virtual environment. Once your virtual environment is active, executable names like python and pip will point to the correct ones.
+Share
+Follow
+edited Nov 25, 2021 at 9:59
+user avatar
+Wai Ha Lee
+8,1726868 gold badges5959 silver badges8686 bronze badges
+answered Feb 19, 2019 at 3:48
+user avatar
+mpenkov
+21.1k88 gold badges8181 silver badges123123 bronze badges
+
+    58
+    Already tried, output: /usr/local/bin/python3.7: no module named pip [Same for pip3] – 
+    Justcurious
+    Feb 19, 2019 at 16:58
+    13
+    Sounds like your Python 3.7 install is missing pip. You could try installing it using: python3.7 -m ensurepip. Also, I notice that you installed from source. If the above options don't work for you, then perhaps try installing via apt instead: apt install python3.7? The apt package comes with the pip module installed. – 
+    mpenkov
+    Feb 20, 2019 at 3:10 
+
+    6
+    I tried python3.7 -m ensurepip, it installed but when I used python3.7 -m pip install package got a bunch of errors. Since I was on a VM, I went back before installing python 3.7 and tried apt install python3.7 and then python3.7 -m pip install package. Now everything is running smooth. Thanks! – 
+    Justcurious
+    Feb 22, 2019 at 17:51
+    2
+    You're supposed to replace "package" with the name of the package you're trying to install. – 
+    mpenkov
+    Apr 23, 2019 at 12:28
+    6
+    No module named ensurepip -_- – 
+    Rainb
+    May 20, 2020 at 21:03
+
+Show 8 more comments
+Report this ad
+131
+
+A quick add-on to mpenkov's answer above (didn't want this to get lost in the comments)
+
+For me, I had to install pip for 3.6 first
+
+sudo apt install python3-pip
+
+now you can install python 3.7
+
+sudo apt install python3.7
+
+and then I could install pip for 3.7
+
+python3.7 -m pip install pip
+
+and as a bonus, to install other modules just preface with
+
+python3.7 -m pip install <module>
+
+EDIT 1 (12/2019):
+
+I know this is obvious for most. but if you want python 3.8, just substitute python3.8 in place of python3.7
+
+EDIT 2 (5/2020):
+
+For those that are able to upgrade, Python 3.8 is available out-of-the-box for Ubuntu 20.04 which was released a few weeks ago.
+Share
+Follow
+edited May 12, 2020 at 0:05
+answered May 15, 2019 at 1:23
+user avatar
+dangel
+6,75855 gold badges4545 silver badges7070 bronze badges
+
+    4
+    Ty! Also calling pip3.7 seems to work after completing the steps. – 
+    toster-cx
+    Nov 22, 2019 at 13:39
+    Why is this happening, can anyone shed light on this strange behavior? – 
+    Adrian Forsius
+    Nov 29, 2019 at 0:47
+    2
+    This also will need export PATH=$HOME/.local/bin:$PATH cause python3.7 -m pip install pip puts pip into $HOME/.local/ – 
+    manasouza
+    May 4, 2020 at 22:20
+
+Add a comment
+31
+
+This works for me.
+
+curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+
+Then this command with sudo:
+
+python3.7 get-pip.py
+
+Based on this instruction.
+Share
+Follow
+answered Jun 18, 2019 at 12:55
+user avatar
+Tomek Tajne
+43866 silver badges66 bronze badges
+
+    Need to run the other commands as on stackoverflow.com/a/57921046/1541042 – 
+    Lucas
+    Oct 29, 2019 at 19:07
+
+Add a comment
+22
+
+I used apt-get to install python3.7 in ubuntu18.04. The installations are as follows.
+
+    install python3.7
+
+sudo apt-get install python3.7 
+
+    install pip3. It should be noted that this may install pip3 for python3.6.
+
+sudo apt-get install python3-pip 
+
+    change the default of python3 for python3.7. This is where the magic is, which will make the pip3 refer to python3.7.
+
+sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 1
+
+Hope it works for you.
+Share
+Follow
+edited Oct 24, 2019 at 1:51
+answered Oct 23, 2019 at 13:07
+user avatar
+Kealen
+22922 silver badges44 bronze badges
+
+    Thanks ! this is the most complete way, since it covers the fact that your system probably has another python3 – 
+    Mehdi Hadji
+    Mar 5, 2021 at 16:16
+
+Add a comment
+10
+
+To install all currently supported python versions (python 3.6 is already pre-installed) including pip for Ubuntu 18.04 do the following:
+
+To install python3.5 and python3.7, use the deadsnakes ppa:
+
+sudo add-apt-repository ppa:deadsnakes/ppa
+sudo apt-get update
+sudo apt-get install python3.5
+sudo apt-get install python3.7
+
+Install python2.7 via distribution packages:
+
+sudo apt install python-minimal  # on Ubuntu 18.04 python-minimal maps to python2.7
+
+To install pip use:
+
+sudo apt install python-pip  # on Ubuntu 18.04 this refers to pip for python2.7
+sudo apt install python3-pip  # on Ubuntu 18.04 this refers to pip for python3.6
+python3.5 -m pip install pip # this will install pip only for the current user
+python3.7 -m pip install pip
+
+I used it for setting up a CI-chain for a python project with tox and Jenkins.
+Share
+Follow
+answered Mar 1, 2019 at 13:37
+user avatar
+S. Brunner
+10133 bronze badges
+Add a comment
+8
+
+Combining the answers from @mpenkon and @dangel, this is what worked for me:
+
+    sudo apt install python3-pip
+
+    python3.7 -m pip install pip
+
+Step #1 is required (assuming you don't already have pip for python3) for step #2 to work. It uses pip for Python3.6 to install pip for Python 3.7 apparently.
+Share
+Follow
+edited Jan 1, 2021 at 20:23
+answered Feb 5, 2020 at 16:26
+user avatar
+bob
+34933 silver badges1010 bronze badges
+
+    4
+    One problem here is that sudo apt install python3-pip does not guarantee the installation of python3.7, but other python3 versions as well – 
+    manasouza
+    May 4, 2020 at 21:54
+    That's true, but oddly why it seems to work (I think; not at all a Linux guru). It seems like some type of bootstrap approach is needed since you can't use software you don't have to install software you don't have. In any case it did work for me. Did you run into issues following this approach? – 
+    bob
+    May 5, 2020 at 13:06
+    In the way that it did not installed python 3.7, yes. Definitely the best approach is to use sudo apt install python3.7 considering Ubuntu 18.04. – 
+    manasouza
+    May 5, 2020 at 14:01
+
+Add a comment
+3
+
+When i use apt install python3-pip, i get a lot of packages need install, but i donot need them. So, i DO like this:
+
+apt update
+apt-get install python3-setuptools
+curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+python3 get-pip.py
+rm -f get-pip.py
+
+Share
+Follow
+answered Jul 17, 2019 at 9:53
+user avatar
+JJP
+72711 gold badge66 silver badges1212 bronze badges
+Add a comment
+3
+
+The following steps can be used:
+
+
+sudo apt-get -y update
+---------
+sudo apt-get install python3.7
+--------------
+ python3.7
+-------------
+ curl -O https://bootstrap.pypa.io/get-pip.py
+-----------------
+sudo apt install python3-pip
+-----------------
+sudo apt install python3.7-venv
+-----------------
+ python3.7 -m venv /home/ubuntu/app
+-------------
+ cd app   
+----------------
+ source bin/activate
+
+Share
+Follow
+edited Sep 13, 2019 at 9:47
+user avatar
+MaartenDev
+5,10355 gold badges2020 silver badges3131 bronze badges
+answered Sep 13, 2019 at 9:37
+user avatar
+Anil Konduru
+3911 bronze badge
+
+    sudo apt-get update sudo apt-get -y update sudo apt-get install python3.7 python3.7 curl -O bootstrap.pypa.io/get-pip.py sudo apt install python3-pip sudo apt install python3.7-venv python3.7 -m venv /home/ubuntu/app cd app ---- source bin/activate – 
+    Anil Konduru
+    Sep 13, 2019 at 9:38
+
+Add a comment
+2
+Install python pre-requisites
+
+sudo apt update
+sudo apt install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev wget
+
+Install python 3.7 (from ppa repository)
+
+sudo add-apt-repository ppa:deadsnakes/ppa
+sudo apt update
+sudo apt install python3.7
+
+Install pip3.7
+
+sudo apt install python3-pip
+python3.7 -m pip install pip
+
+Create python and pip alternatives
+
+sudo update-alternatives --install /usr/local/bin/python python /usr/bin/python3.7 10
+sudo update-alternatives --install /usr/local/bin/pip pip /home/your_username/.local/bin/pip3.7 10
+
+Make changes
+
+source ~/.bashrc
+python --version
+pip --version
+
+Share
+Follow
+answered Oct 29, 2020 at 13:39
+user avatar
+Marvin Correia
+66155 silver badges1010 bronze badges
+Add a comment
+1
+
+For those who intend to use venv:
+
+If you don't already have pip for Python 3:
+
+sudo apt install python3-pip
+
+Install venv package:
+
+sudo apt install python3.7-venv
+
+Create virtual environment (which will be bootstrapped with pip by default):
+
+python3.7 -m venv /path/to/new/virtual/environment
+
+To activate the virtual environment, source the appropriate script for the current shell, from the bin directory of the virtual environment. The appropriate scripts for the different shells are:
+
+bash/zsh – activate
+
+fish – activate.fish
+
+csh/tcsh – activate.csh
+
+For example, if using bash:
+
+source /path/to/new/virtual/environment/bin/activate
+
+Optionally, to update pip for the virtual environment (while it is activated):
+
+pip install --upgrade pip
+
+When you want to deactivate the virtual environment:
+
+deactivate 
+
+Share
+Follow
+answered Aug 3, 2019 at 4:51
+user avatar
+James T
+67277 silver badges1010 bronze badges
+Add a comment
+1
+
+I installed pip3 using
+
+python3.7 -m pip install pip
+
+But upon using pip3 to install other dependencies, it was using python3.6.
+You can check the by typing pip3 --version
+
+Hence, I used pip3 like this (stated in one of the above answers):
+
+python3.7 -m pip install <module>
+
+or use it like this:
+
+python3.7 -m pip install -r requirements.txt
+
+I made a bash alias for later use in ~/.bashrc file as alias pip3='python3.7 -m pip'. If you use alias, don't forget to source ~/.bashrc after making the changes and saving it.
+Share
+Follow
+answered Jun 15, 2020 at 6:48
+user avatar
+Sunil Singh
+5644 bronze badges
+Add a comment
+1
+
+How about simply
+
+add-apt-repository ppa:deadsnakes/ppa
+apt-get update
+apt-get install python3.7-dev
+alias pip3.7="python3.7 -m pip"
+
+Now you have the command
+
+pip3.7
+
+separately from pip3.
+Share
+Follow
+answered Nov 11, 2020 at 11:11
+user avatar
+El Sampsa
+1,52733 gold badges1616 silver badges3131 bronze badges
+Add a comment
+1
+
+curl https://bootstrap.pypa.io/get-pip.py | sudo python3.7
+
+if all else fails.
+Share
+Follow
+answered Mar 30, 2021 at 15:02
+user avatar
+DragonLord
+5,87144 gold badges3333 silver badges3737 bronze badges
+Add a comment
+-2
+
+pip3 not pip. You can create an alias like you did with python3 if you like.
+Share
+Follow
+answered Feb 11, 2019 at 15:18
+user avatar
+Patrick Conwell
+56144 silver badges1010 bronze badges
+
+    Same issue. /usr/local/bin/python3.7: no module named pip3 – 
+    Justcurious
+    Feb 11, 2019 at 15:26
+    in your terminal, type $ which pip and $ which pip3 and see what both of those say. – 
+    Patrick Conwell
+    Feb 11, 2019 at 15:28
+    /usr/bin/pip and /usr/bin/pip3 – 
+    Justcurious
+    Feb 11, 2019 at 15:29
+    Okay, what exactly are you typing into the terminal to see the error no module named pip3 or whatever? – 
+    Patrick Conwell
+    Feb 11, 2019 at 15:30
+    python3.7 -m pip3 install psycopg2. If i just use pip3 install psycopg2 it downloads the module, but I still can't import it in Python 3.7. – 
+    Justcurious
+    Feb 11, 2019 at 15:35 
+
+Show 6 more comments
+Your Answer
+
+Sign up or log in
+Post as a guest
+Name
+Email
+
+Required, but never shown
+
+By clicking “Post Your Answer”, you agree to our terms of service, privacy policy and cookie policy
+Not the answer you're looking for? Browse other questions tagged python ubuntu pip or ask your own question.
+
+    The Overflow Blog
+
+Run your microservices in no-fail mode (Ep. 452)
+
+    WSO2 joins Collectives™ on Stack Overflow
+    Featured on Meta
+    Announcing the arrival of Valued Associate #1214: Dalmarus
+    Ask Wizard Test Results and Next Steps
+    The [comma] tag is being burninated
+
+Report this ad
+Linked
+1
+Python Error: ModuleNotFoundError: No module named '<moduleName>'
+0
+How to install pip3 for a specific python version
+Related
+3542
+How do I get the current time?
+3321
+How can I add new keys to a dictionary?
+3246
+How do I concatenate two lists in Python?
+2512
+How to upgrade all Python packages with pip
+2687
+How do I install pip on Windows?
+921
+pip install mysql-python fails with EnvironmentError: mysql_config not found
+1503
+How can I install packages using pip according to the requirements.txt file from a local directory?
+1672
+How do I install pip on macOS or OS X?
+936
+pip install from git repo branch
+Hot Network Questions
+
+    How can I go back to a PhD program I left for another?
+    Resubmit for Security Review - What is different from initial
+    KiCad error - parallel 7805 outputs
+    Faulty SATA disk but with a periodic error?
+    This looks like it may be part of a building
+    Why is XOR not linearly separable?
+    Restore a LUKS partition that was overwritten by pvcreate
+    Using fixed placeholders vs hiding element
+    Fitting pentominoes inside a 10x10 grid
+    Why can't immortals use the "make humans ignore this" symbol as an invisibility cloak?
+    Consecutive coin flips
+    Are alcoholism and drug addiction curable diseases?
+    In a series, do the stakes have to be higher than in the book before?
+    Was plastic from a seaplane shot down in 1944 recently found in an albatross stomach?
+    Is the Cluedo joke in Sherlock's "The Hounds of Baskerville" a random gag or is the game genuinely broken?
+    Is Gould playing extra notes in Bach's Toccata in C Minor, and if so, why?
+    Which Terry Pratchett character said something like "It doesn't matter if you are right, or wrong so long as you are certain"?
+    How should an adult lead a group of child cyclists?
+    Getting list of values from column in QGIS
+    Dealing with my own behaviour after an unpleasant afterwork hangout
+    How to change a cylinder from round to octagonal shape half way along its length
+    Creating graduated classes for election swing map in QGIS
+    How rude is it to be late for a valedictory lecture?
+    Why did Boeing never replace the 757?
+
+Question feed
+
+Stack Overflow
+
+    Questions
+    Help
+
+Products
+
+    Teams
+    Advertising
+    Collectives
+    Talent
+
+Company
+
+    About
+    Press
+    Work Here
+    Legal
+    Privacy Policy
+    Terms of Service
+    Contact Us
+    Cookie Settings
+    Cookie Policy
+
+Stack Exchange Network
+
+    Technology
+    Culture & recreation
+    Life & arts
+    Science
+    Professional
+    Business
+    API
+    Data
+
+    Blog
+    Facebook
+    Twitter
+    LinkedIn
+    Instagram
+
+Site design / logo © 2022 Stack Exchange Inc; user contributions licensed under cc by-sa. rev 2022.6.14.42365
+ 

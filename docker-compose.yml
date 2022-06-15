@@ -1,0 +1,5 @@
+version: '3'
+services:
+  airflow:
+    image: airflow
+    network_mode: host
