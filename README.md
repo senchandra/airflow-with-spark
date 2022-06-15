@@ -6,6 +6,7 @@ Docker and docker-compose should be installed
 
 # Build steps
 Clone the repo, and run the build.sh file. This will create an image airflow:latest and will start the container.
+[Note: Image can also be directly downloaded by 'docker pull senchandra/airflow'. If using this, change the image in docker-compose.yml from airflow to senchandra/airflow]
 
 # List of programs running
 1. Spark standalone cluster manager (Master and slave). Spark UI at port 8080 and spark master at spark://127.0.1.1:7077
